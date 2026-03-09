@@ -1,0 +1,15 @@
+# Livox Mid-360 (InvenSense ICM-40609 datasheet + add motor vibration noise)
+rostopic: /livox/imu
+update_rate: 200.0
+
+# Gyroscope noise parameters
+# Noise Density: 0.008 dps/sqrt(Hz) -> ~0.00014 rad/s/sqrt(Hz)
+gyroscope_noise_density: 0.001
+# Random Walk: Based on typical bias instability for this grade
+gyroscope_random_walk: 0.0001       
+
+# Accelerometer noise parameters
+# Noise Density: 120 ug/sqrt(Hz) -> ~0.00118 m/s^2/sqrt(Hz)
+accelerometer_noise_density: 0.01 
+# Random Walk: Based on typical bias instability
+accelerometer_random_walk: 0.001
