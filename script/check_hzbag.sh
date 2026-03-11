@@ -20,7 +20,7 @@ RAW_DURATION=$(rosbag info "$BAG_FILE" | grep "duration:" | grep -oP '\(\K[^)]+'
 
 if [ -z "$RAW_DURATION" ]; then
     # Fallback if parentheses aren't there
-    RAW_DURATION=$(rosbag info "$BAG_FILE" | grep "duration:" | awk '{print $2}' | tr -d 's')
+RAW_DURATION=$(rosbag info "$BAG_FILE" | grep "duration:" | awk '{print $2}' | tr -d 's')
 fi
 
 echo "----------------------------------------------------------------------------------------"
@@ -29,15 +29,13 @@ echo "Total Duration: ${RAW_DURATION} seconds"
 echo "----------------------------------------------------------------------------------------"
 
 # 4. Extract Topics and Counts
-# We start reading after the "topics:" line
-rosbag info "$BAG_FILE" | sed -n '/topics:/,$p' | tail -n +2 | while read -r line; do
-    # Extract topic name and message count
-    topic=$(echo "$line" | awk '{print $1}')
-    count=$(echo "$line" | awk '{print $2}')
+rosbag info "$BAG_FILE" | grep "msgs" | while read -r line; do
+    clean_line=$(echo "$line" | sed 's/topics://g')
     
-    # Only process if count is a number
+    topic=$(echo "$clean_line" | awk '{print $1}')
+    count=$(echo "$clean_line" | awk '{print $2}')
+    
     if [[ "$count" =~ ^[0-9]+$ ]]; then
-        # Perform calculation using awk (standard in almost all distros)
         frequency=$(awk -v c="$count" -v d="$RAW_DURATION" 'BEGIN { if (d>0) printf "%.2f", c / d; else print "0.00" }')
         printf "Topic: %-50s Frequency: %7s Hz\n" "$topic" "$frequency"
     fi

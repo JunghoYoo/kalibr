@@ -3,24 +3,23 @@
 # Camera models
 # https://github.com/ethz-asl/kalibr/wiki/supported-models
 MODELS=(
-    "pinhole-radtan"
-    "pinhole-equi"
-    "pinhole-fov"
-    "omni-none"
-    "omni-radtan"
-    "eucm-none"
-    "ds-none"
+    "pinhole-equi pinhole-equi"
+    "omni-radtan omni-radtan"
+    "eucm-none eucm-none"
+    "ds-none ds-none"
 )
 
+
 TARGET="/data/april_6x6_lunarlab.yaml"
-BAGFOLDER="/data/DataBag_2026-03-08-14-42-53" # No trailing slash needed here
-BAGFILE="data.bag"
-TOPICS="/camera/color/image_raw/compressed"
-TIME_RANGE="0 90"
-FREQ="30" 
-+-
+BAGFOLDER="/data/DataBag_2026-03-10-21-17-14" # No trailing slash needed here
+
+BAGFILE="data_0.bag"
+TOPICS="/left_camera/image/compressed /right_camera/image/compressed"
+#TIME_RANGE="0 90"
+#FREQ="10" 
+
+export MPLBACKEND=Agg
 export QT_QPA_PLATFORM=offscreen
-SUMMARY_REPORT=""
 
 # Full path to bag
 FULL_BAG_PATH="$BAGFOLDER/$BAGFILE"
@@ -28,26 +27,25 @@ FULL_BAG_PATH="$BAGFOLDER/$BAGFILE"
 BAG_PREFIX=$(basename "$BAGFILE" .bag)
 
 for MODEL in "${MODELS[@]}"; do
-    FOLDER_NAME="${MODEL}_single"
+    FOLDER_NAME="${MODEL}_stereo"
     RESULT_PATH="$BAGFOLDER/results/$FOLDER_NAME"
     
     echo "----------------------------------------------------------"
-    echo "RUNNING SINGLE CALIB: $MODEL"
+    echo "RUNNING Stereo CALIB: $MODEL"
     echo "----------------------------------------------------------"
     
     mkdir -p "$RESULT_PATH"
     # Stay in catkin_ws or a neutral dir; Kalibr will write to $BAGFOLDER
+#       --bag-from-to $TIME_RANGE \
+ #      --bag-freq $FREQ \
     cd /catkin_ws
 
     rosrun kalibr kalibr_calibrate_cameras \
        --target "$TARGET" \
        --bag "$FULL_BAG_PATH" \
-       --bag-from-to $TIME_RANGE \
        --models $MODEL \
        --topics $TOPICS \
-       --bag-freq $FREQ \
        --verbose \
-       --show-extraction \
        --dont-show-report
 
     # Check for the camchain file in the BAGFOLDER
@@ -84,7 +82,7 @@ echo ""
 echo "=========================================================="
 echo "                KALIBR CALIBRATION SUMMARY"
 echo "=========================================================="
-printf "%-13s | %-7s | %-20s\n" "MODEL" "STATUS" "RMSE (PIXELS)"
+printf "%23s | %-7s | %-20s\n" "MODEL" "STATUS" "RMSE (PIXELS)"
 echo "----------------------------------------------------------"
 echo -e "$SUMMARY_REPORT" | column -t -s '|'
 echo "=========================================================="
