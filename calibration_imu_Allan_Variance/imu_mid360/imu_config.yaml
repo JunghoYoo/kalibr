@@ -1,0 +1,4 @@
+imu_topic: "/livox/imu"
+imu_rate: 200
+measure_rate: 100
+sequence_time: 2800

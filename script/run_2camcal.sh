@@ -59,7 +59,6 @@ for MODEL in "${MODELS[@]}"; do
         TEXT_REPORT=$(ls -t "$BAGFOLDER"/${BAG_PREFIX}-results-cam.txt 2>/dev/null | head -n 1)
         
         if [ -n "$TEXT_REPORT" ]; then
-            # This extracts the first value (0.293 in your case) after the "+- [" string
             RMSE_VAL=$(grep "reprojection error:" "$TEXT_REPORT" | sed -n 's/.*+- \[\([^,]*\),.*/\1/p' | xargs)
             RMSE="${RMSE_VAL} px"
         else

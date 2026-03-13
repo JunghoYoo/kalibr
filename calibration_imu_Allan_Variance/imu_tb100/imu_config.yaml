@@ -1,0 +1,4 @@
+imu_topic: "/handsfree/imu"
+imu_rate: 800
+measure_rate: 100
+sequence_time: 2800
