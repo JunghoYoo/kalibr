@@ -210,8 +210,19 @@ if __name__ == "__main__":
         print("[ERROR]: Unknown grid pattern")
         sys.exit(0)
             
-    #write to file
-    c.writePDFfile(parsed.output)
+
+    if True:
+        doc = document.document([
+            document.page(c,
+                paperformat=document.paperformat(24 * 2.54, 36 * 2.54),
+                fittosize=0,
+                margin=0)
+        ])
+        doc.writePDFfile(parsed.output)
+    else:
+        # write to file
+        c.writePDFfile(parsed.output)
+
     
     if parsed.do_eps:
         c.writeEPSfile(parsed.output)
